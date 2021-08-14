@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { backendUrl } from '../src/global';
+import { backendUrl } from '../global';
 
 const config = (axiosConfig: AxiosRequestConfig) => {
   axiosConfig.headers.common = {
