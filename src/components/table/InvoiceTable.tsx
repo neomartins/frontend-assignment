@@ -10,8 +10,10 @@ import {
   TableCell,
   Typography,
 } from '@material-ui/core';
-import { getInvoices } from '../server/Invoices';
+import { getInvoices } from '../../server/Invoices';
 import { Invoice } from '../types/Types';
+import Header from '../utils/Header';
+import Selector from '../dropdown/Selector';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -37,15 +39,16 @@ const StyledTableCell = withStyles((theme) => ({
     },
   });
   
-  interface InvoiceTableProps {
-    selector: string;
-  }
-const InvoiceTable = (props: InvoiceTableProps) => {
-    const {
-      selector,
-    } = props;
+
+const InvoiceTable = () => {
+
     const classes = useStyles();
     const [invoice, setInvoice] = React.useState([] as Invoice[]);
+    const [period, setPeriod] = React.useState('revenue');
+    
+    const handleSelectorSelect = (period: string) => {
+      setPeriod(period);
+    };
 
     useEffect(() => {
         getInvoices().then((response) => setInvoice(response.data))
@@ -53,8 +56,12 @@ const InvoiceTable = (props: InvoiceTableProps) => {
       }, []);
 
     return (
-    <div>
-      <Typography variant="h5">{"List of the 15 latest invoices by date"}</Typography>
+    <div style={{paddingBottom: '20px'}}>
+      <Header text="List of the 15 latest invoices" />
+      <Selector
+        handleSelectorSelect={handleSelectorSelect}
+        showBoth={false}
+      />
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -63,7 +70,7 @@ const InvoiceTable = (props: InvoiceTableProps) => {
               <StyledTableCell align="right">Costumer Name</StyledTableCell>
               <StyledTableCell align="right">Date</StyledTableCell>
               <StyledTableCell align="right">Region</StyledTableCell>
-              <StyledTableCell align="right">{ selector === 'revenues' ? 'Invoice' : 'Period'} </StyledTableCell>
+              <StyledTableCell align="right">{ period === 'revenues' ? 'Invoice' : 'Margin'} </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -75,7 +82,7 @@ const InvoiceTable = (props: InvoiceTableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.date}</StyledTableCell>
                 <StyledTableCell align="right">{row.region}</StyledTableCell>
-                <StyledTableCell align="right">{ selector === 'revenues' ? row.total_invoice : row.total_margin}</StyledTableCell>
+                <StyledTableCell align="right">{ period === 'revenues' ? row.total_invoice : row.total_margin}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

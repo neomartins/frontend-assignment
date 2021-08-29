@@ -10,9 +10,11 @@ import {
   TableCell,
   Typography,
 } from '@material-ui/core';
-import { getCustomersRevenues } from '../server/Customers';
+import { getCustomersRevenues } from '../../server/Customers';
 import { Customers, Invoice } from '../types/Types';
-import { getInvoices } from '../server/Invoices';
+import { getInvoices } from '../../server/Invoices';
+import Header from '../utils/Header';
+import Selector from '../dropdown/Selector';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -38,19 +40,19 @@ const StyledTableCell = withStyles((theme) => ({
     },
   });
 
-  interface BestCustomerTable {
-    selector: string;
-  }
 
-const BestCustomerTable = (props: BestCustomerTable) => {
-    const {
-      selector,
-    } = props;
+const BestCustomerTable = () => {
+ 
     const classes = useStyles();
     const [customers, setCustomers] = React.useState([] as Customers[]);
+    const [period, setPeriod] = React.useState('revenue');
+    
+    const handleSelectorSelect = (period: string) => {
+      setPeriod(period);
+    };
 
     const fillRegionIntoCustomer = (customers: Customers[], invoices: Invoice[]) => {
-      customers.slice(0,15).map((customer) => {
+      customers.map((customer) => {
         let region = '';
         let invoice = invoices.filter((e) => e.customer_id === customer.customer_id);
         invoice.forEach((r) => region = region ? (region.includes(r.region) ? region.concat('') : region.concat(',').concat(r.region)) : r.region);
@@ -68,8 +70,12 @@ const BestCustomerTable = (props: BestCustomerTable) => {
       }, []);
 
     return (
-    <div>
-      <Typography variant="h5">{"List of our best customers"}</Typography>
+    <div style={{paddingBottom: '20px'}}>
+      <Header text="List of our best customers" />
+      <Selector
+        handleSelectorSelect={handleSelectorSelect}
+        showBoth={false}
+      />
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -78,7 +84,7 @@ const BestCustomerTable = (props: BestCustomerTable) => {
               <StyledTableCell align="right">Costumer Name</StyledTableCell>
               <StyledTableCell align="right">Date</StyledTableCell>
               <StyledTableCell align="right">Region</StyledTableCell>
-              <StyledTableCell align="right">{ selector === 'revenues' ? 'Invoice' : 'Period'} </StyledTableCell>
+              <StyledTableCell align="right">{ period === 'revenues' ? 'Invoice' : 'Margin'} </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -90,7 +96,7 @@ const BestCustomerTable = (props: BestCustomerTable) => {
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.customer_name}</StyledTableCell>
                 <StyledTableCell align="right">{row.region}</StyledTableCell>
-                <StyledTableCell align="right">{ selector === 'revenues' ? row.total_revenue : row.total_margin}</StyledTableCell>
+                <StyledTableCell align="right">{ period === 'revenues' ? row.total_revenue : row.total_margin}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

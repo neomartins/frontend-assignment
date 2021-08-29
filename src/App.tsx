@@ -1,74 +1,20 @@
-import React, { useEffect } from 'react';
-import './App.css';
-import InvoiceTable from './table/InvoiceTable';
-import BestCustomerTable from './table/BestCustomerTable';
-import ChartLine from './charts/ChartLine';
-import ChartBar from './charts/ChartBar';
-import DropdownPeriod from './dropdown/DropdownPeriod'
-import {
-  Container, makeStyles, useMediaQuery, useTheme,
-} from '@material-ui/core';
+import React from 'react';
+import Container from '@material-ui/core/Container';
+import { createTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import Dashboard from './components/Dashboard';
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    paddingBottom: theme.spacing(3),
+const theme = createTheme({
+  palette: {
+    type: 'dark',
   },
-  container: {
-    flexWrap: 'wrap',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, auto))',
-    gridGap: '15px',
-  },
-  link: {
-    color: theme.palette.primary.light,
-  },
-}));
+});
 
-
-function App() {
-  const classes = useStyles();
-  const isSmallScreen = useMediaQuery(useTheme().breakpoints.down('sm'));
-  const [period, setPeriod] = React.useState('monthly');
-  const [selector, setSelector ] = React.useState('revenues');
-
-  const handlePeriod = (period: string) => {
-    setPeriod(period);
-  };
-
-  const handleSelector = (selector: string) => {
-    setSelector(selector);
-  };
-
-
-  return (
-    <Container maxWidth="xl" disableGutters={isSmallScreen}>
-      <div>
-          <DropdownPeriod
-            handlePeriodSelect={handlePeriod}
-            handleSelectorSelect={handleSelector}
-          />
-        </div>
-      <div className={classes.container}>
-        <div>
-          <InvoiceTable 
-            selector={selector}
-          />
-          <ChartBar 
-            selector={selector}
-          />
-        </div>
-        <div>
-          <BestCustomerTable 
-            selector={selector}
-          />
-          <ChartLine 
-            period={period}
-            selector={selector}
-          />
-        </div>
-      </div>
+const App = () => (
+  <ThemeProvider theme={theme}>
+    <Container>
+      <Dashboard />
     </Container>
-  );
-}
-
+  </ThemeProvider>
+);
 export default App;

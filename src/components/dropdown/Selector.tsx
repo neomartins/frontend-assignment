@@ -16,14 +16,15 @@ const useStyles = makeStyles((theme) => ({
       },
   }));
 
-  interface DropdownPeriodProps {
-    handlePeriodSelect: (periood: string) => void;
-    handleSelectorSelect: (periood: string) => void;
+  interface SelectordProps {
+    handlePeriodSelect?: (periood: string) => void;
+    handleSelectorSelect?: (periood: string) => void;
+    showBoth: boolean;
   }
 
-const DropdownPeriod = (props: DropdownPeriodProps) => {
+const Selector = (props: SelectordProps) => {
     const {
-        handlePeriodSelect, handleSelectorSelect,
+        handlePeriodSelect, handleSelectorSelect, showBoth
       } = props;
     const classes = useStyles();
     const [period, setPeriod] = React.useState('monthly');
@@ -32,18 +33,20 @@ const DropdownPeriod = (props: DropdownPeriodProps) => {
     const handlePeriod = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
         const element = event.target as HTMLSelectElement;
         setPeriod(element.value);
-        handlePeriodSelect(element.value);
+        if(handlePeriodSelect)
+            handlePeriodSelect(element.value);
     };
 
     const handleSelector = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
         const element = event.target as HTMLSelectElement;
         setSelector(element.value);
+        if(handleSelectorSelect)
         handleSelectorSelect(element.value);
 ;    };
 
     return (
     <div className={classes.container}>
-        <Typography variant="h5">{"Period selector:"}</Typography>
+        {showBoth  && (
         <TextField
             select
             variant="outlined"
@@ -58,8 +61,7 @@ const DropdownPeriod = (props: DropdownPeriodProps) => {
                 {'monthly'}
             </MenuItem>
         </TextField>
-
-        <Typography variant="h5">{"Value type selector:"}</Typography>
+        )}
         <TextField
             select
             variant="outlined"
@@ -71,11 +73,12 @@ const DropdownPeriod = (props: DropdownPeriodProps) => {
                 {'revenues'}
             </MenuItem>
             <MenuItem value="margin">
-                {'margin..'}
+                {'margin'}
             </MenuItem>
-        </TextField>
+        </TextField>   
     </div> 
+    
     );
 };
 
-export default DropdownPeriod;
+export default Selector;

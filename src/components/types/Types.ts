@@ -24,14 +24,12 @@ export interface Invoice {
   }
 
   export interface Revenues {
-    total_revenue: number;
-    total_margin: number;
-    month: Date;
-    week: Date;
-  }
-
-  export interface ChartLines {
-    x: Date;
-    y: number;
+  week: string;
+  month: string;
+  start_date: Date;
+  end_date: Date;
+  invoices_count: number;
+  total_margin: number;
+  total_revenue: number;
   }
 
